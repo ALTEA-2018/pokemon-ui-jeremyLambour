@@ -18,6 +18,7 @@ public class PokemonTypeController {
         view.addObject("pokemonTypes",pokemonTypeService.listPokemonsTypes());
         return  view;
     }
+    
 
     public PokemonTypeService getService() {
         return pokemonTypeService;
