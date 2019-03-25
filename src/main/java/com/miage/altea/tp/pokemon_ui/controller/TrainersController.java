@@ -1,5 +1,7 @@
 package com.miage.altea.tp.pokemon_ui.controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +18,10 @@ public class TrainersController {
 	private TrainerService service;
 	
 	  @GetMapping("/")
-	    public ModelAndView trainers(){
+	    public ModelAndView trainers(Principal principal){
 	        ModelAndView view = new ModelAndView();
 	        view.setViewName("trainer");
-	        view.addObject("trainers",service.getAllTrainers());
+	        view.addObject("trainers",service.getAllTrainers(principal));
 	        return  view;
 	    }
 }

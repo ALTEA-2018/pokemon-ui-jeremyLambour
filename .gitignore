@@ -4,3 +4,5 @@ target/
 # intellij files
 .idea/
 *.iml
+/.classpath
+/.project

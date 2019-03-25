@@ -2,17 +2,17 @@
 {{>layout/navbar}}
 
 <body>
+    {{#profileTrainer}}
 
-<div class="container">
-    <h1 class="pt-md-5 pb-md-5">Pokedex</h1>
-
+    <h1>{{name}}</h1>
     <div class="card-deck">
-        {{#pokemonTypes}}
+        {{#trainerTeam}}
         <div class="col-md-3">
             <div class="card shadow-sm mb-3">
                 <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">{{name}} <!--2--><span class="badge badge-secondary">Id {{id}}
-                        <!--3--></span></h4>
+                    <h4 class="my-0 font-weight-normal">{{name}}
+                        <!--2--><span class="badge badge-secondary">Id {{id}}
+                            <!--3--></span></h4>
                 </div>
                 <div id="pokemonCarouselControls{{id}}" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
@@ -49,10 +49,7 @@
                 </div>
             </div>
         </div>
-        {{/pokemonTypes}}
+        {{/trainerTeam}}
     </div>
-
-</div>
-
+    {{/profileTrainer}}
 </body>
-</html>

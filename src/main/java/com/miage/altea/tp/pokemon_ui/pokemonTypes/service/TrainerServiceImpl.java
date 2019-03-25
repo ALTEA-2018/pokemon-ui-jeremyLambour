@@ -1,5 +1,6 @@
 package com.miage.altea.tp.pokemon_ui.pokemonTypes.service;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import com.miage.altea.tp.pokemon_ui.pokemonTypes.bo.Trainer;
 
 @Service
-public class TrainerServiceImpl implements TrainerService {
+public class TrainerServiceImpl implements TrainerService{
 
 	private RestTemplate template;
 
@@ -27,7 +28,7 @@ public class TrainerServiceImpl implements TrainerService {
 	private PokemonTypeService pokemonService;
 
 	@Override
-	public List<Trainer> getAllTrainers() {
+	public List<Trainer> getAllTrainers(Principal principal) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAcceptLanguageAsLocales(List.of(LocaleContextHolder.getLocale()));
 		HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -35,10 +36,11 @@ public class TrainerServiceImpl implements TrainerService {
 				.exchange(getTrainerApiUrl() + "/trainers/", HttpMethod.GET, entity, Trainer[].class)
 				.getBody();
 		List<Trainer> trainersList = Arrays.asList(trainers);
-		for(Trainer trainer : trainersList) {
-			trainer.setTrainerTeam(trainer.getTeam().stream().map(x -> pokemonService.getPokemonById(x.getPokemonType())).collect(Collectors.toList()));
+		List<Trainer> tempsTrainers = trainersList.parallelStream().filter(trainer -> !trainer.getName().equalsIgnoreCase(principal.getName())).collect(Collectors.toList());
+		for(Trainer trainer : tempsTrainers) {
+			trainer.setTrainerTeam(trainer.getTeam().parallelStream().map(x -> pokemonService.getPokemonById(x.getPokemonType())).collect(Collectors.toList()));
 		}		
-		return trainersList;
+		return tempsTrainers;
 	}
 
 	public RestTemplate getTemplate() {
@@ -58,6 +60,17 @@ public class TrainerServiceImpl implements TrainerService {
 	@Value("${trainer.service.url}")
 	public void setTrainerApiUrl(String trainerApiUrl) {
 		this.trainerApiUrl = trainerApiUrl;
+	}
+
+	
+	
+	public Trainer getTrainer(String name) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAcceptLanguageAsLocales(List.of(LocaleContextHolder.getLocale()));
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+		Trainer trainer = template
+				.getForObject(getTrainerApiUrl() + "/trainers/{name}",Trainer.class,name);
+		return trainer;
 	}
 
 }
