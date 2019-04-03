@@ -25,7 +25,7 @@ public class PokemonTypeServiceImpl implements PokemonTypeService {
 
     public RestTemplate restTemplate;
     
-    @HystrixCommand(fallbackMethod="getDefaultListPokemon")
+    @HystrixCommand(fallbackMethod="getPokemonDefaultList")
     public List<PokemonType> listPokemonsTypes() {
     	HttpHeaders headers = new HttpHeaders();
     	headers.setAcceptLanguageAsLocales(List.of(LocaleContextHolder.getLocale()));
